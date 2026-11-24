@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TSP Haus Quotation</title>
+<style>
+:root{
+  --bg:#f5f5f7;--card:#fff;--ink:#1d1d1f;--sub:#6e6e73;--line:#e5e5ea;--soft:#f2f2f4;
+  --wood:#a0622d;--wood-bg:#fbf3ec;--alu:#2f6db5;--alu-bg:#eef4fb;--good:#1f8a4c;--warn:#c27c0e;--bad:#c4372f;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:16px 16px 140px}
+header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 16px}
+.brand{font-weight:700;letter-spacing:.06em;font-size:15px}
+.brand small{display:block;font-weight:500;letter-spacing:0;color:var(--sub);font-size:12px}
+.tabs{display:flex;background:#e8e8ed;border-radius:10px;padding:3px;margin-left:auto}
+.tabs button{border:0;background:none;padding:7px 14px;border-radius:8px;cursor:pointer;font-weight:500;color:var(--sub)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);margin:0 0 12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card h2 .sp{flex:1}
+.grid{display:grid;gap:10px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:760px){.g4,.g3{grid-template-columns:1fr 1fr}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--sub)}
+input,select,textarea{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;outline:none;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{border-color:#8fb3e0;box-shadow:0 0 0 3px rgba(47,109,181,.12)}
+input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--soft)}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.pri:hover{background:#333}
+.btn.sm{padding:5px 9px;font-size:13px}
+.btn.ghost{border-color:transparent;background:none;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;cursor:pointer;font-size:13px}
+.chip:hover{border-color:#bbb;background:var(--soft)}
+.chip b{font-weight:600}
+.grp{margin-bottom:10px}.grp .gl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+.lines{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.lines th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);font-weight:600;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.lines th:first-child,.lines th.l{text-align:left}
+.lines td{padding:8px;border-bottom:1px solid var(--soft);text-align:right;vertical-align:middle;white-space:nowrap}
+.lines td.l{text-align:left;white-space:normal}
+.lines .nm{font-weight:500}.lines .cd{font-size:12px;color:var(--sub)}
+.lines input.q{width:78px}.lines select{width:190px}
+.lines .w{background:var(--wood-bg)}.lines .a{background:var(--alu-bg)}
+th.w{color:var(--wood)!important}th.a{color:var(--alu)!important}
+.mg{display:inline-block;font-size:11px;padding:1px 6px;border-radius:6px;font-weight:600;margin-left:4px}
+.mg.ok{background:#e5f4ea;color:var(--good)}.mg.lo{background:#fdf1de;color:var(--warn)}.mg.bad{background:#fbe5e3;color:var(--bad)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+.chip.gc{background:var(--t);border-color:var(--b);color:var(--ink)}
+.chip.gc:hover{background:var(--b)}
+.grp .gl{display:flex;align-items:center;font-weight:600}
+.lines tr.gc td:first-child{box-shadow:inset 4px 0 0 var(--c);padding-left:14px}
+.gtag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:6px;margin-bottom:3px;white-space:nowrap;background:var(--t);color:var(--c)}
+.seg{display:flex;background:#e8e8ed;border-radius:10px;padding:3px}
+.seg button{flex:1;border:0;background:none;padding:6px 8px;border-radius:8px;cursor:pointer;font-weight:500;color:var(--sub);white-space:nowrap}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seg button[data-m=wood].on{color:var(--wood)}.seg button[data-m=alu].on{color:var(--alu)}
+body.m-wood .lines .a,body.m-wood .lines th.a,body.m-wood .up,body.m-wood .opt.a,body.m-wood .opt.d,body.m-wood .da,
+body.m-alu .lines .w,body.m-alu .lines th.w,body.m-alu .up,body.m-alu .opt.w,body.m-alu .opt.d,body.m-alu .dw{display:none!important}
+body.m-wood .sum,body.m-alu .sum{grid-template-columns:minmax(0,420px)}
+.empty{color:var(--sub);text-align:center;padding:28px 8px}
+.x{border:0;background:none;color:#aaa;cursor:pointer;font-size:18px;line-height:1;padding:2px 6px}
+.x:hover{color:var(--bad)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sum{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:760px){.sum{grid-template-columns:1fr}}
+.opt{border-radius:var(--r);padding:14px 16px}
+.opt.w{background:var(--wood-bg)}.opt.a{background:var(--alu-bg)}.opt.d{background:#f2f2f4}
+.opt .t{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.opt.w .t{color:var(--wood)}.opt.a .t{color:var(--alu)}.opt.d .t{color:var(--sub)}
+.opt .big{font-size:28px;font-weight:700;letter-spacing:-.02em;margin:2px 0 6px;font-variant-numeric:tabular-nums}
+.opt .row{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums}
+.opt .row b{color:var(--ink);font-weight:600}
+.dock{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-top:1px solid var(--line);z-index:5}
+.dock .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.dock .v{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px}
+.dock .k{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.05em}
+.dock .sp{flex:1}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);cursor:pointer;user-select:none}
+.toggle input{width:auto}
+body.client .int{display:none!important}
+.hint{font-size:12px;color:var(--sub);margin:6px 0 0}
+.warnbox{background:#fdf1de;color:#7a4d06;border-radius:10px;padding:10px 12px;font-size:13px;margin-top:10px}
+/* rates */
+.rt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+.rt th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);font-weight:600;text-align:right;padding:6px;border-bottom:1px solid var(--line);white-space:nowrap}
+.rt th.l,.rt td.l{text-align:left}
+.rt td{padding:5px 6px;border-bottom:1px solid var(--soft);text-align:right;white-space:nowrap}
+.rt input{width:86px;padding:5px 7px}
+.rt .gh td{background:var(--soft);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);font-weight:600;text-align:left}
+.kv{display:grid;grid-template-columns:1fr 110px;gap:6px 10px;align-items:center;font-size:14px}
+.kv span{color:var(--ink)}.kv em{font-style:normal;color:var(--sub);font-size:12px;display:block}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-start;justify-content:center;z-index:20;overflow:auto;padding:24px 12px}
+.modal.on{display:flex}
+.sheet{background:#fff;border-radius:16px;max-width:820px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.sheet .bar{display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0}
+.doc{padding:36px 40px;font-size:13px}
+.doc h1{font-size:22px;letter-spacing:.08em;margin:0}
+.doc .meta{display:flex;justify-content:space-between;gap:20px;margin:18px 0;flex-wrap:wrap}
+.doc table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.doc th{text-align:left;border-bottom:1.5px solid #111;padding:6px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.doc td{padding:7px 4px;border-bottom:1px solid #e5e5e5;vertical-align:top}
+.doc .r{text-align:right;white-space:nowrap}
+.doc .tot td{border:0;font-weight:700;font-size:15px;border-top:1.5px solid #111}
+.doc .opth td{background:#f4f4f4;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.06em}
+.doc .terms{white-space:pre-line;color:#333}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.2s;z-index:30;pointer-events:none}
+.toast.on{opacity:1}
+@media print{
+  body *{visibility:hidden}
+  .doc,.doc *{visibility:visible}
+  .doc{position:absolute;inset:0;padding:0}
+  .modal{position:static;background:none;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">TSP HAUS<small>Quotation · Plywood vs ACP Aluminium</small></div>
+    <div class="tabs" id="tabs">
+      <button data-t="quote" class="on">Quote</button>
+      <button data-t="rates" class="int">Rates &amp; Costs</button>
+      <button data-t="saved">Saved</button>
+    </div>
+  </header>
+
+  <!-- ================= QUOTE ================= -->
+  <section id="v-quote">
+    <div class="card">
+      <h2>Project</h2>
+      <div class="grid g4">
+        <label class="f">Client name<input id="q-client" placeholder="e.g. Ms Hazel"></label>
+        <label class="f">Phone<input id="q-phone" placeholder="01x-xxx xxxx"></label>
+        <label class="f">Site / address<input id="q-site" placeholder="e.g. Port Dickson"></label>
+        <label class="f">Quote no.<input id="q-no"></label>
+      </div>
+      <div class="grid g4" style="margin-top:10px">
+        <label class="f">Default door (new items)<select id="q-door"></select></label>
+        <label class="f">&nbsp;<button class="btn" id="apply-door">Apply door to all items</button></label>
+        <label class="f">Discount (RM)<input id="q-disc" type="number" min="0" step="10" value="0"></label>
+        <label class="f">Body material<div class="seg" id="q-mode"><button data-m="wood">Plywood</button><button data-m="alu">ACP Alu</button><button data-m="both">Compare</button></div></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Add items <span class="sp"></span><input id="search" placeholder="Search…" style="max-width:200px;padding:6px 10px"></h2>
+      <div id="catalog"></div>
+      <div class="chips" style="margin-top:4px"><button class="chip gc" style="--t:#1d1d1f12;--b:#1d1d1f30" id="add-custom">＋ <b>Custom line</b></button></div>
+    </div>
+
+    <div class="card">
+      <h2>Items <span class="sp"></span><button class="btn sm ghost" id="clear">Clear all</button></h2>
+      <div class="scroll">
+        <table class="lines" id="lines"></table>
+      </div>
+      <div id="lowwarn"></div>
+    </div>
+
+    <div class="card">
+      <h2>Summary</h2>
+      <div class="sum" id="summary"></div>
+    </div>
+  </section>
+
+  <!-- ================= RATES ================= -->
+  <section id="v-rates" style="display:none">
+    <div class="card">
+      <h2>How this works</h2>
+      <p class="hint" style="margin:0">Edit any figure and every quote recalculates live. Edits are kept in this browser only. Use <b>Export</b> to move them to another phone or computer, and <b>Reset</b> to go back to the price sheet's figures.</p>
+      <div class="chips" style="margin-top:10px">
+        <button class="btn sm" id="r-export">Export settings</button>
+        <button class="btn sm" id="r-import">Import settings</button>
+        <button class="btn sm" id="r-reset">Reset to price sheet</button>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h2>Wood materials</h2><div class="kv" id="r-wood"></div></div>
+      <div class="card"><h2>Aluminium, ACP &amp; glass</h2><div class="kv" id="r-alu"></div></div>
+    </div>
+    <div class="card">
+      <h2>Doors (supplier buy cost → sell rate)</h2>
+      <div class="scroll"><table class="rt" id="r-doors"></table></div>
+      <p class="hint">Sell rate = buy ÷ (1 − margin), rounded up. HPL door cost is worked out from the blockboard and HPL sheet prices. Changing the door on a line swaps the base door's rate (HPL for plywood, 3G for ACP) for the chosen door's rate × door sqft per unit.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h2>Factory overhead</h2><div class="kv" id="r-oh"></div><p class="hint" id="r-ohbase"></p></div>
+      <div class="card"><h2>Site installation (cost)</h2><div class="kv" id="r-inst"></div></div>
+    </div>
+    <div class="card">
+      <h2>Item rate card <span class="sp"></span><label class="toggle">Min. margin flag <input id="r-min" type="number" step="1" style="width:70px"> %</label></h2>
+      <div class="scroll"><table class="rt" id="r-items"></table></div>
+      <p class="hint">Cost = material + overhead + install. “× Mat” = sell ÷ material only, so you can check items against your 3× material rule. Sell prices are editable.</p>
+    </div>
+    <div class="card">
+      <h2>Quotation text</h2>
+      <div class="grid g3">
+        <label class="f">Company name on quote<input id="r-company"></label>
+        <label class="f">Validity (days)<input id="r-valid" type="number"></label>
+      </div>
+      <label class="f" style="margin-top:10px">Payment terms (one per line)<textarea id="r-terms" rows="4"></textarea></label>
+    </div>
+  </section>
+
+  <!-- ================= SAVED ================= -->
+  <section id="v-saved" style="display:none">
+    <div class="card">
+      <h2>Saved quotes <span class="sp"></span><button class="btn sm pri" id="save-now">Save current quote</button></h2>
+      <div id="saved-list"></div>
+      <p class="hint">Saved in this browser only.</p>
+    </div>
+  </section>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="dw"><div class="k" style="color:var(--wood)">Plywood</div><div class="v" id="d-w">RM 0</div></div>
+    <div class="da"><div class="k" style="color:var(--alu)">ACP Alu</div><div class="v" id="d-a">RM 0</div></div>
+    <div class="int"><div class="k">Profit</div><div class="v" id="d-p" style="font-size:14px">–</div></div>
+    <div class="sp"></div>
+    <label class="toggle"><input type="checkbox" id="clientmode"> Client view</label>
+    <button class="btn" id="new">New</button>
+    <button class="btn pri" id="gen">Quotation</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div class="bar">
+      <b style="margin-right:auto">Quotation</b>
+      <button class="btn sm" id="m-wa">Copy for WhatsApp</button>
+      <button class="btn sm" id="m-tsv">Copy for Google Sheets</button>
+      <button class="btn sm" id="m-print">Print / PDF</button>
+      <button class="btn sm ghost" id="m-close">Close</button>
+    </div>
+    <div class="doc" id="doc"></div>
+  </div>
+</div>
+
+<div class="modal" id="io">
+  <div class="sheet" style="max-width:640px">
+    <div class="bar"><b style="margin-right:auto" id="io-title">Settings</b><button class="btn sm pri" id="io-go">Copy</button><button class="btn sm ghost" id="io-close">Close</button></div>
+    <div style="padding:16px"><p class="hint" id="io-hint" style="margin:0 0 8px"></p><textarea id="io-text" rows="14" style="font:12px ui-monospace,Menlo,monospace"></textarea></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== TSP Haus quotation engine (mirrors Dual_Quote_Master + Dual_Compare_Quote) =====
+const DEFAULTS = {
+  mat: { ply: 95, bb: 120, hpl: 100, abs: 0.55, waste: 0.15, alkg: 24, acp: 2.9, glass: 3, handle: 1.5, hinge: 3.5 },
+  oh: { rent: 3000, salary: 14000, util: 1200, diesel: 800, cap: 160, ccFrame: 30, ccInsert: 55, panel: 15 },
+  inst: { base: 35, w30: 20, w36: 25, w48: 30, t9: 50, t10: 60, dp9: 48, dp10: 55, ccFrame: 25, ccInsert: 45, panel: 10 },
+  doors: [
+    { code: 'D-HPL', name: 'Blockboard + HPL Laminate', src: 'In-house', buy: null, m: 0.55 },
+    { code: 'D-3G', name: '3G Color Glass + Alu Handle', src: 'In-house', buy: 13, m: 0.48 },
+    { code: 'D-4G', name: '4G Frameless Glass', src: 'Outsource', buy: 30, m: 0.35 },
+    { code: 'D-HC', name: 'Aluminium Honeycomb', src: 'Outsource', buy: 38, m: 0.35 },
+    { code: 'D-NY', name: 'Nyatoh Solid Timber', src: 'Outsource', buy: 38, m: 0.35 },
+    { code: 'D-AL', name: 'Full Heavy Aluminium', src: 'Outsource', buy: 45, m: 0.35 },
+    { code: 'D-NONE', name: 'No Door (Open Carcase)', src: '—', buy: 0, m: 0 },
+  ],
+  sell: {
+    'B1': [350, 400], 'W1': [230, 320], 'W2': [300, 350], 'W3': [360, 420],
+    'T1-36': [280, 480], 'T1-48': [340, 550], 'T2-90': [630, 920], 'T2-100': [720, 1020],
+    'T4-90': [750, 920], 'T4-100': [850, 1020], 'DP-90': [600, 900], 'DP-100': [700, 1000],
+    'C1-90': [650, 800], 'C1-100': [750, 900], 'D-18': [150, 180], 'D-24': [160, 200], 'D-36': [200, 250],
+    'CC-Door': [140, 160], 'CC-BX24': [180, 280], 'CC-BX36': [200, 280], 'CC-CNR': [350, 850],
+    'CC-B12': [120, 220], 'ACC-BTL': [320, 320], 'CC-D90': [220, 320], 'ACC-DISH': [460, 460],
+    'P-Base': [150, 150], 'P-W30': [78, 78], 'P-W48': [125, 125], 'P-T9': [450, 450], 'P-T10': [500, 500],
+    'L1': [500, 500],
+  },
+  minMargin: 0.25,
+  terms: 'RM1,000 non-refundable design deposit upon order confirmation\n50% before production\n30% before installation\n20% upon completion of installation',
+  company: 'TSP HAUS',
+  validity: 30,
+};
+
+// helpers for material formulas
+const W = (m, ply, bb, door, abs, add) =>
+  (ply * (m.ply / 32) + bb * (m.bb / 32) + door * ((m.bb + m.hpl) / 32)) * (1 + m.waste) + abs * m.abs + add;
+const A = (m, al, acp, glass, handle, hinge, add) =>
+  al * (m.alkg / 24) + acp * m.acp + glass * m.glass + handle * m.handle + hinge * m.hinge + add;
+const num = v => () => v;
+
+// oh: ['mult', x] -> base OH x mult ; ['key', k, mult] -> s.oh[k]*mult ; ['fix', w, a]
+// inst: ['key', k, mult] ; ['fix', w, a]
+const ITEMS = [
+  // group, code, name, unit, doorSqft, woodMat, aluMat, oh, inst
+  ['Base & Wall', 'B1', 'Base Cabinet 36"H × 24"D', 'ft run', 2.5, m => W(m, 10.23, 2, 2.67, 8, 18), m => A(m, 78.44, 14.66, 6.25, 10.5, 4, 43.18), ['mult', 1], ['key', 'base']],
+  ['Base & Wall', 'W1', 'Wall Cabinet 30"H × 15"D', 'ft run', 2.5, m => W(m, 7.08, 1.25, 2.5, 7, 12), m => A(m, 49.52, 12.5, 6.25, 8.5, 4, 0), ['mult', 0.65], ['key', 'w30']],
+  ['Base & Wall', 'W2', 'Wall Cabinet 36"H × 15"D', 'ft run', 3, m => W(m, 8.33, 2.5, 3, 8, 14), m => A(m, 54, 14.5, 7.5, 9.5, 4, 0), ['mult', 0.85], ['key', 'w36']],
+  ['Base & Wall', 'W3', 'Wall Cabinet 48"H × 15"D (ceiling box-up)', 'ft run', 4, m => W(m, 10.83, 2.5, 4, 10, 16), m => A(m, 56.88, 17.5, 10, 11.5, 4, 0), ['mult', 1], ['key', 'w48']],
+  ['Tall & Fridge', 'T1-36', 'Over-Fridge Box 36"H × 24"D (9′ ceiling)', 'ft run', 3, m => W(m, 10, 2, 3, 8, 14), m => A(m, 95, 22.4, 7.5, 10, 4, 15), ['mult', 0.85], ['key', 'w36']],
+  ['Tall & Fridge', 'T1-48', 'Over-Fridge Box 48"H × 24"D (10′ ceiling)', 'ft run', 4, m => W(m, 12, 4, 4, 10, 16), m => A(m, 115, 29.3, 10, 12, 4, 18), ['mult', 1], ['key', 'w48']],
+  ['Tall & Fridge', 'T2-90', 'Built-in Oven Tower 9′H × 24"D', 'ft run', 7.5, m => W(m, 24, 8, 7.5, 15, 30), m => A(m, 195, 45, 18, 22, 8, 35), ['mult', 1.5], ['key', 't9']],
+  ['Tall & Fridge', 'T2-100', 'Built-in Oven Tower 10′H × 24"D', 'ft run', 8.5, m => W(m, 27, 10, 8.5, 17, 35), m => A(m, 218, 52, 20, 25, 8, 40), ['mult', 1.7], ['key', 't10']],
+  ['Tall & Fridge', 'T4-90', 'Tall Pantry Tower 9′H × 24"D', 'ft run', 8.5, m => W(m, 25, 12, 8.5, 15, 30), m => A(m, 195, 45, 18, 22, 8, 35), ['mult', 1.5], ['key', 't9']],
+  ['Tall & Fridge', 'T4-100', 'Tall Pantry Tower 10′H × 24"D', 'ft run', 9.5, m => W(m, 28, 14, 9.5, 17, 35), m => A(m, 218, 52, 20, 25, 8, 40), ['mult', 1.7], ['key', 't10']],
+  ['Living & Bedroom', 'DP-90', 'Display Cabinet 9′H × 18"D', 'ft run', 8.5, m => W(m, 20, 9, 8.5, 13, 28), m => A(m, 175, 38, 18, 22, 8, 30), ['mult', 1.35], ['key', 'dp9']],
+  ['Living & Bedroom', 'DP-100', 'Display Cabinet 10′H × 18"D', 'ft run', 9.5, m => W(m, 22.5, 10.5, 9.5, 15, 32), m => A(m, 195, 44, 20, 25, 8, 35), ['mult', 1.5], ['key', 'dp10']],
+  ['Living & Bedroom', 'C1-90', 'Full-Height Wardrobe 9′H × 24"D', 'ft run', 8.5, m => W(m, 24, 7.5, 8.5, 12, 26), m => A(m, 116, 29.8, 18, 11.2, 2.4, 17), ['mult', 1.5], ['key', 't9']],
+  ['Living & Bedroom', 'C1-100', 'Full-Height Wardrobe 10′H × 24"D', 'ft run', 9.5, m => W(m, 27, 9, 9.5, 14, 30), m => A(m, 130, 34, 20, 13, 2.8, 20), ['mult', 1.7], ['key', 't10']],
+  ['Drawers', 'D-18', 'Soft-Close Drawer 18"L (per layer)', 'layer', 1.25, num(70), num(93), ['fix', 15, 15], ['fix', 10, 10]],
+  ['Drawers', 'D-24', 'Soft-Close Drawer 24"L (per layer)', 'layer', 1.67, num(70), num(93), ['fix', 16, 16], ['fix', 10, 10]],
+  ['Drawers', 'D-36', 'Soft-Close Pot Drawer 36"L (per layer)', 'layer', 2.5, num(84), num(140), ['fix', 20, 20], ['fix', 13, 13]],
+  ['Concrete Table', 'CC-Door', 'Concrete Table – Door + Subframe (28–30"H)', 'ft run', 2.5, m => W(m, 0.5, 0, 2.5, 8, 10), m => A(m, 12, 3, 6.25, 7, 0, 14), ['key', 'ccFrame', 1], ['key', 'ccFrame']],
+  ['Concrete Table', 'CC-BX24', 'Concrete Table – 24" Drawer Carcass Box', 'set', 0, num(70), num(153), ['fix', 25, 25], ['fix', 20, 20]],
+  ['Concrete Table', 'CC-BX36', 'Concrete Table – 36" Drawer Carcass Box', 'set', 0, num(100), num(180), ['fix', 30, 30], ['fix', 25, 25]],
+  ['Concrete Table', 'CC-CNR', 'Concrete Table – Corner Box-Up 36"×36"×30"H', 'set', 0, num(165), num(580), ['key', 'ccInsert', 1], ['key', 'ccInsert']],
+  ['Concrete Table', 'CC-B12', 'Concrete Table – 12" Bottle Rack Box', 'set', 0, num(42), num(110), ['fix', 30, 30], ['fix', 20, 20]],
+  ['Concrete Table', 'CC-D90', 'Concrete Table – 900mm Dish Rack Box', 'set', 0, num(88), num(180), ['fix', 40, 40], ['fix', 25, 25]],
+  ['Hardware', 'ACC-BTL', '12" S/S Pull-Out Bottle Rack + Slides', 'set', 0, num(200), num(200), ['fix', 0, 0], ['fix', 20, 20]],
+  ['Hardware', 'ACC-DISH', '900mm S/S Pull-Out Dish Rack + Slides', 'set', 0, num(300), num(300), ['fix', 0, 0], ['fix', 25, 25]],
+  ['End Panels', 'P-Base', 'Base End Panel 24"D × 36"H', 'pc', 0, m => 6 * ((m.bb + m.hpl) / 32) * (1 + m.waste) + 10 * m.abs + 2, m => 12 * m.acp + 8 * (m.alkg / 24) + 5, ['key', 'panel', 1], ['key', 'panel', 1]],
+  ['End Panels', 'P-W30', 'Wall End Panel 15"D × 30"H', 'pc', 0, m => 3.13 * ((m.bb + m.hpl) / 32) * (1 + m.waste) + 7 * m.abs + 2, m => 6.25 * m.acp + 5 * (m.alkg / 24) + 3, ['key', 'panel', 0.6], ['key', 'panel', 0.6]],
+  ['End Panels', 'P-W48', 'Wall End Panel 15"D × 48"H', 'pc', 0, m => 5 * ((m.bb + m.hpl) / 32) * (1 + m.waste) + 10 * m.abs + 2, m => 10 * m.acp + 7 * (m.alkg / 24) + 4, ['key', 'panel', 0.8], ['key', 'panel', 0.8]],
+  ['End Panels', 'P-T9', 'Tall / Wardrobe End Panel 24"D × 9′H', 'pc', 0, m => 18 * ((m.bb + m.hpl) / 32) * (1 + m.waste) + 22 * m.abs + 5, m => 36 * m.acp + 25 * (m.alkg / 24) + 10, ['key', 'panel', 2], ['key', 'panel', 2]],
+  ['End Panels', 'P-T10', 'Tall / Wardrobe End Panel 24"D × 10′H', 'pc', 0, m => 20 * ((m.bb + m.hpl) / 32) * (1 + m.waste) + 24 * m.abs + 5, m => 40 * m.acp + 28 * (m.alkg / 24) + 12, ['key', 'panel', 2.2], ['key', 'panel', 2.2]],
+  ['Others', 'L1', 'Site Delivery, Lorry Transport & Wrap', 'lot', 0, num(0), num(0), ['fix', 0, 0], ['fix', 350, 350]],
+].map(r => ({ group: r[0], code: r[1], name: r[2], unit: r[3], F: r[4], wMat: r[5], aMat: r[6], oh: r[7], inst: r[8] }));
+
+const ITEM = Object.fromEntries(ITEMS.map(i => [i.code, i]));
+
+function ohBase(s) { const o = s.oh; return (o.rent + o.salary + o.util + o.diesel) / (o.cap || 1); }
+function ohOf(s, it, side) {
+  const o = it.oh;
+  if (o[0] === 'mult') return ohBase(s) * o[1];
+  if (o[0] === 'key') return s.oh[o[1]] * (o[2] ?? 1);
+  return side === 0 ? o[1] : o[2];
+}
+function instOf(s, it, side) {
+  const i = it.inst;
+  if (i[0] === 'key') return s.inst[i[1]] * (i[2] ?? 1);
+  return side === 0 ? i[1] : i[2];
+}
+function doorBuy(s, d) { return d.code === 'D-HPL' ? Math.round(((s.mat.bb + s.mat.hpl) / 32) * 100) / 100 : +d.buy || 0; }
+function doorSell(s, d) { const b = doorBuy(s, d); return d.m >= 1 ? 0 : Math.ceil(b / (1 - d.m) - 1e-9); }
+function door(s, code) { return s.doors.find(d => d.code === code) || s.doors[0]; }
+
+// Per-unit master figures for an item: [wood, alu] each {mat, oh, inst, cost, sell}
+function master(s, it) {
+  return [0, 1].map(side => {
+    const mat = side === 0 ? it.wMat(s.mat) : it.aMat(s.mat);
+    const oh = ohOf(s, it, side), inst = instOf(s, it, side);
+    const cost = mat + oh + inst, sell = +s.sell[it.code][side];
+    return { mat, oh, inst, cost, sell, margin: sell > 0 ? (sell - cost) / sell : 0 };
+  });
+}
+
+// One quote line -> both options
+function lineCalc(s, ln) {
+  if (ln.custom) {
+    const q = +ln.qty || 0, r = +ln.rate || 0, c = +ln.cost || 0;
+    const o = { rate: r, total: q * r, cost: q * c, profit: q * (r - c), margin: r > 0 ? (r - c) / r : 0 };
+    return { wood: o, alu: { ...o } };
+  }
+  const it = ITEM[ln.code]; const q = +ln.qty || 0;
+  const [mw, ma] = master(s, it);
+  const F = it.F, d = door(s, ln.door || 'D-3G');
+  const hpl = door(s, 'D-HPL'), g3 = door(s, 'D-3G');
+  const wr = mw.sell - F * doorSell(s, hpl) + F * doorSell(s, d);
+  const ar = ma.sell - F * doorSell(s, g3) + F * doorSell(s, d);
+  const wc = mw.cost - F * doorBuy(s, hpl) + F * doorBuy(s, d);
+  const ac = ma.cost - F * doorBuy(s, g3) + F * doorBuy(s, d);
+  const mk = (r, c) => ({ rate: r, unitCost: c, total: q * r, cost: q * c, profit: q * (r - c), margin: r > 0 ? (r - c) / r : 0 });
+  return { wood: mk(wr, wc), alu: mk(ar, ac) };
+}
+
+
+
+// ===== group colours =====
+const GC = { 'Base & Wall':'#0f8b8d', 'Tall & Fridge':'#7a4fc2', 'Living & Bedroom':'#c2467a', 'Drawers':'#c98a00',
+  'Concrete Table':'#5b6b7a', 'Hardware':'#2e8b57', 'End Panels':'#d0592b', 'Others':'#8e8e93', 'Custom':'#1d1d1f' };
+const gv = g => { const c = GC[g] || '#8e8e93'; return `--c:${c};--t:${c}1a;--b:${c}40`; };
+// ===== state =====
+const LS = { get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
+const clone = o => JSON.parse(JSON.stringify(o));
+function freshSettings(){ return clone(DEFAULTS); }
+let S = (()=>{ const s = LS.get('tsp.settings'); if(!s) return freshSettings();
+  const d = freshSettings(); // merge so new defaults appear
+  for (const k of ['mat','oh','inst','sell']) d[k] = Object.assign(d[k], s[k]||{});
+  if (Array.isArray(s.doors)) d.doors = d.doors.map(x => Object.assign(x, (s.doors.find(y=>y.code===x.code))||{}));
+  for (const k of ['minMargin','terms','company','validity']) if (s[k]!==undefined) d[k]=s[k];
+  return d; })();
+const blankQ = () => ({ client:'', phone:'', site:'', no: nextNo(), door:'D-3G', disc:0, show: LS.get('tsp.mode')||'wood', lines:[] });
+function nextNo(){ const d=new Date(); const n=(LS.get('tsp.seq')||0)+1; return `TSP-${d.getFullYear()}-${String(n).padStart(3,'0')}`; }
+let Q = LS.get('tsp.draft') || blankQ();
+const saveS = () => LS.set('tsp.settings', S);
+const saveQ = () => LS.set('tsp.draft', Q);
+
+// ===== utils =====
+const $ = s => document.querySelector(s);
+const rm = (v, d=2) => 'RM ' + (+v||0).toLocaleString('en-MY',{minimumFractionDigits:d,maximumFractionDigits:d});
+const rm0 = v => 'RM ' + Math.round(+v||0).toLocaleString('en-MY');
+const pct = v => (v*100).toFixed(1)+'%';
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mgTag = m => `<span class="mg ${m < 0.10 ? 'bad' : m < S.minMargin ? 'lo' : 'ok'} int">${pct(m)}</span>`;
+function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove('on'),1600); }
+async function copy(t){ try{ await navigator.clipboard.writeText(t); toast('Copied'); } catch(e){ openIO('Copy this text','Copying was blocked here — select all and copy.', t, null); } }
+const doorOpts = sel => S.doors.map(d => `<option value="${d.code}" ${d.code===sel?'selected':''}>${esc(d.name)}</option>`).join('');
+
+// ===== quote view =====
+function renderHeader(){
+  $('#q-client').value=Q.client; $('#q-phone').value=Q.phone; $('#q-site').value=Q.site; $('#q-no').value=Q.no;
+  $('#q-door').innerHTML=doorOpts(Q.door); $('#q-disc').value=Q.disc||0; applyMode();
+}
+function renderCatalog(){
+  const term = ($('#search').value||'').toLowerCase();
+  const groups = {};
+  ITEMS.forEach(it => { if (term && !(it.name+' '+it.code).toLowerCase().includes(term)) return; (groups[it.group] ||= []).push(it); });
+  $('#catalog').innerHTML = Object.entries(groups).map(([g, arr]) =>
+    `<div class="grp" style="${gv(g)}"><div class="gl" style="color:var(--c)"><span class="dot" style="background:var(--c)"></span>${g}</div><div class="chips">${arr.map(it =>
+      `<button class="chip gc" data-add="${it.code}">${esc(it.name)}</button>`).join('')}</div></div>`).join('') || '<p class="hint">No match.</p>';
+}
+function addLine(code){
+  const it = ITEM[code];
+  Q.lines.push({ id: Date.now()+Math.random(), code, qty: it.unit==='ft run' ? '' : 1, door: it.F>0 ? Q.door : 'D-NONE' });
+  saveQ(); renderLines(); setTimeout(()=>{ const ins=document.querySelectorAll('#lines input.q'); ins[ins.length-1]?.focus(); },0);
+}
+function renderLines(){
+  const t = $('#lines');
+  if (!Q.lines.length){ t.innerHTML = `<tr><td class="empty" colspan="9">Tap an item above to start the quote.</td></tr>`; renderTotals(); return; }
+  let h = `<tr><th class="l">Item</th><th>Qty</th><th class="l">Door</th>
+    <th class="w">Plywood rate</th><th class="w">Plywood amt</th>
+    <th class="a">ACP rate</th><th class="a">ACP amt</th><th class="int up">+ Upgrade</th><th></th></tr>`;
+  for (const ln of Q.lines){
+    const c = lineCalc(S, ln);
+    if (ln.custom){
+      h += `<tr class="gc" style="${gv('Custom')}" data-id="${ln.id}">
+        <td class="l"><span class="gtag">Custom</span><br><input data-f="desc" value="${esc(ln.desc)}" placeholder="Description" style="min-width:180px"><div style="display:flex;gap:6px;margin-top:4px"><input data-f="unit" value="${esc(ln.unit)}" placeholder="unit" style="width:80px"><label class="int" style="font-size:12px;color:var(--sub);display:flex;align-items:center;gap:4px">cost/u <input data-f="cost" type="number" value="${ln.cost??''}" style="width:80px"></label></div></td>
+        <td><input class="q" data-f="qty" type="number" step="any" value="${ln.qty}"></td>
+        <td class="l"><span class="cd">Custom price</span></td>
+        <td class="w"><input data-f="rate" type="number" step="any" value="${ln.rate??''}" style="width:90px"></td>
+        <td class="w">${rm(c.wood.total)} ${mgTag(c.wood.margin)}</td>
+        <td class="a"><input data-f="rate" type="number" step="any" value="${ln.rate??''}" style="width:90px"></td><td class="a">${rm(c.alu.total)} ${mgTag(c.alu.margin)}</td>
+        <td class="int up">–</td><td><button class="x" data-del>×</button></td></tr>`;
+      continue;
+    }
+    const it = ITEM[ln.code];
+    h += `<tr class="gc" style="${gv(it.group)}" data-id="${ln.id}">
+      <td class="l"><span class="gtag">${it.group}</span><div class="nm">${esc(it.name)}</div><div class="cd">${it.code} · per ${it.unit}${it.F?` · ${it.F} sqft door/u`:''}</div></td>
+      <td><input class="q" data-f="qty" type="number" min="0" step="any" value="${ln.qty}" placeholder="${it.unit==='ft run'?'ft':'qty'}"></td>
+      <td class="l">${it.F>0 ? `<select data-f="door">${doorOpts(ln.door)}</select>` : '<span class="cd">—</span>'}</td>
+      <td class="w">${rm(c.wood.rate)}</td><td class="w">${rm(c.wood.total)} ${mgTag(c.wood.margin)}</td>
+      <td class="a">${rm(c.alu.rate)}</td><td class="a">${rm(c.alu.total)} ${mgTag(c.alu.margin)}</td>
+      <td class="int up">${rm(c.alu.total - c.wood.total)}</td>
+      <td><button class="x" data-del title="Remove">×</button></td></tr>`;
+  }
+  t.innerHTML = h; renderTotals();
+}
+function totals(){
+  let w={t:0,c:0}, a={t:0,c:0}; const lows=[];
+  for (const ln of Q.lines){ const c=lineCalc(S,ln); w.t+=c.wood.total; w.c+=c.wood.cost; a.t+=c.alu.total; a.c+=c.alu.cost;
+    if ((+ln.qty||0)>0){ const nm = ln.custom ? (ln.desc||'Custom line') : ITEM[ln.code].name;
+      if ((Q.show!=='alu' || ln.custom) && c.wood.margin < S.minMargin) lows.push(`${nm} — plywood ${pct(c.wood.margin)}`);
+      if (!ln.custom && Q.show!=='wood' && c.alu.margin < S.minMargin) lows.push(`${nm} — ACP ${pct(c.alu.margin)}`); } }
+  const d=+Q.disc||0; w.t-=d; a.t-=d;
+  w.p=w.t-w.c; a.p=a.t-a.c; w.m=w.t>0?w.p/w.t:0; a.m=a.t>0?a.p/a.t:0;
+  return {w,a,lows,d};
+}
+function renderTotals(){
+  const {w,a,lows,d} = totals();
+  $('#summary').innerHTML = `
+    <div class="opt w"><div class="t">${Q.show==='both'?'Option 1 · ':''}Plywood body</div><div class="big">${rm(w.t)}</div>
+      ${d?`<div class="row"><span>after discount</span><b>− ${rm(d)}</b></div>`:''}
+      <div class="row int"><span>Cost</span><b>${rm(w.c)}</b></div><div class="row int"><span>Profit</span><b>${rm(w.p)} ${mgTag(w.m)}</b></div></div>
+    <div class="opt a"><div class="t">${Q.show==='both'?'Option 2 · ':''}ACP Aluminium body</div><div class="big">${rm(a.t)}</div>
+      ${d?`<div class="row"><span>after discount</span><b>− ${rm(d)}</b></div>`:''}
+      <div class="row int"><span>Cost</span><b>${rm(a.c)}</b></div><div class="row int"><span>Profit</span><b>${rm(a.p)} ${mgTag(a.m)}</b></div></div>
+    <div class="opt d"><div class="t">Upgrade to aluminium</div><div class="big">+ ${rm(a.t-w.t)}</div>
+      <div class="row"><span>Difference</span><b>${w.t>0?'+'+pct((a.t-w.t)/w.t):'–'}</b></div>
+      <div class="row int"><span>Extra profit</span><b>${rm(a.p-w.p)}</b></div></div>`;
+  $('#lowwarn').innerHTML = lows.length ? `<div class="warnbox int"><b>Below ${pct(S.minMargin)} margin:</b><br>${lows.map(esc).join('<br>')}</div>` : '';
+  $('#d-w').textContent = rm0(w.t); $('#d-a').textContent = rm0(a.t);
+  $('#d-p').textContent = Q.show==='wood' ? `${rm0(w.p)} · ${pct(w.m)}` : Q.show==='alu' ? `${rm0(a.p)} · ${pct(a.m)}` : `${rm0(w.p)} · ${rm0(a.p)}`;
+}
+
+// events: quote
+['client','phone','site','no'].forEach(k => $('#q-'+k).addEventListener('input', e => { Q[k]=e.target.value; saveQ(); }));
+$('#q-door').addEventListener('change', e => { Q.door=e.target.value; saveQ(); });
+$('#q-disc').addEventListener('input', e => { Q.disc=+e.target.value||0; saveQ(); renderTotals(); });
+function applyMode(){ const m=Q.show||'both'; document.body.classList.remove('m-wood','m-alu'); if(m!=='both') document.body.classList.add('m-'+m);
+  document.querySelectorAll('#q-mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===m)); }
+$('#q-mode').addEventListener('click', e => { const b=e.target.closest('button'); if(!b) return; Q.show=b.dataset.m; LS.set('tsp.mode',Q.show); saveQ(); applyMode(); renderTotals(); });
+$('#apply-door').onclick = () => { Q.lines.forEach(l => { if(!l.custom && ITEM[l.code].F>0) l.door=Q.door; }); saveQ(); renderLines(); toast('Door applied'); };
+$('#search').addEventListener('input', renderCatalog);
+$('#catalog').addEventListener('click', e => { const b=e.target.closest('[data-add]'); if(b) addLine(b.dataset.add); });
+$('#add-custom').onclick = () => { Q.lines.push({id:Date.now(),custom:true,desc:'',unit:'lot',qty:1,rate:'',cost:''}); saveQ(); renderLines(); };
+$('#clear').onclick = () => { if(!Q.lines.length) return; const b=$('#clear'); if(b.dataset.c){ Q.lines=[]; saveQ(); renderLines(); b.textContent='Clear all'; delete b.dataset.c; } else { b.textContent='Tap again to clear'; b.dataset.c=1; setTimeout(()=>{b.textContent='Clear all';delete b.dataset.c},2500); } };
+const linesEl = $('#lines');
+linesEl.addEventListener('input', e => {
+  const f=e.target.dataset.f; if(!f) return; const tr=e.target.closest('tr'); const ln=Q.lines.find(l=>String(l.id)===tr.dataset.id); if(!ln) return;
+  ln[f]=e.target.value; saveQ();
+  if (f==='door') { renderLines(); return; }
+  // live update numbers without losing focus
+  const c=lineCalc(S,ln); const tds=tr.children;
+  if (ln.custom){ tds[4].innerHTML=`${rm(c.wood.total)} ${mgTag(c.wood.margin)}`; tds[6].innerHTML=`${rm(c.alu.total)} ${mgTag(c.alu.margin)}`; if(f==='rate') tr.querySelectorAll('input[data-f=rate]').forEach(i=>{ if(i!==e.target) i.value=e.target.value; }); }
+  else { tds[4].innerHTML=`${rm(c.wood.total)} ${mgTag(c.wood.margin)}`; tds[6].innerHTML=`${rm(c.alu.total)} ${mgTag(c.alu.margin)}`; tds[7].textContent=rm(c.alu.total-c.wood.total); }
+  renderTotals();
+});
+linesEl.addEventListener('change', e => { if(e.target.dataset.f==='door') renderLines(); });
+linesEl.addEventListener('click', e => { if(e.target.closest('[data-del]')){ const id=e.target.closest('tr').dataset.id; Q.lines=Q.lines.filter(l=>String(l.id)!==id); saveQ(); renderLines(); } });
+$('#clientmode').addEventListener('change', e => { document.body.classList.toggle('client', e.target.checked); if(e.target.checked && $('#tabs .on').dataset.t==='rates') showTab('quote'); });
+$('#new').onclick = () => { if (Q.lines.length && !confirmNew()) return; Q=blankQ(); saveQ(); renderAll(); toast('New quote'); };
+function confirmNew(){ const b=$('#new'); if(b.dataset.c){ delete b.dataset.c; b.textContent='New'; return true; } b.dataset.c=1; b.textContent='Tap again'; setTimeout(()=>{delete b.dataset.c;b.textContent='New'},2500); return false; }
+
+// ===== quotation document =====
+function quoteRows(side){
+  return Q.lines.filter(l => (+l.qty||0)>0).map(l => {
+    const c = lineCalc(S,l)[side];
+    let desc, unit;
+    if (l.custom){ desc=l.desc||'Item'; unit=l.unit||''; }
+    else { const it=ITEM[l.code]; desc=it.name; unit=it.unit;
+      if (it.F>0){ const d=S.doors.find(x=>x.code===l.door); desc += d && d.code!=='D-NONE' ? ` — ${d.name} door` : ' — open (no door)'; } }
+    return { desc, unit, qty:+l.qty, rate:c.rate, amt:c.total };
+  });
+}
+const sideName = { wood:'Option 1 — Plywood body', alu:'Option 2 — ACP Aluminium body' }; // single-mode docs show no option header
+function buildDoc(){
+  const sides = Q.show==='both' ? ['wood','alu'] : [Q.show];
+  const date = new Date().toLocaleDateString('en-MY',{day:'2-digit',month:'short',year:'numeric'});
+  let body = '';
+  for (const s of sides){
+    const rows = quoteRows(s); const sub = rows.reduce((x,r)=>x+r.amt,0); const d=+Q.disc||0;
+    if (sides.length>1) body += `<tr class="opth"><td colspan="5">${sideName[s]}</td></tr>`;
+    rows.forEach((r,i) => body += `<tr><td>${i+1}</td><td>${esc(r.desc)}</td><td class="r">${r.qty} ${esc(r.unit)}</td><td class="r">${rm(r.rate)}</td><td class="r">${rm(r.amt)}</td></tr>`);
+    if (d) body += `<tr><td></td><td>Discount</td><td></td><td></td><td class="r">− ${rm(d)}</td></tr>`;
+    body += `<tr class="tot"><td></td><td colspan="3">${sides.length>1?'Total — '+sideName[s].split('— ')[1]:'Total'}</td><td class="r">${rm(sub-d)}</td></tr>`;
+  }
+  $('#doc').innerHTML = `
+    <h1>${esc(S.company)}</h1><div style="color:#666">Quotation</div>
+    <div class="meta">
+      <div><b>To:</b> ${esc(Q.client)||'—'}<br>${Q.phone?esc(Q.phone)+'<br>':''}${esc(Q.site)}</div>
+      <div style="text-align:right"><b>No:</b> ${esc(Q.no)}<br><b>Date:</b> ${date}<br><b>Valid:</b> ${S.validity} days</div>
+    </div>
+    <table><tr><th style="width:28px">#</th><th>Description</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Amount</th></tr>${body}</table>
+    <div style="margin-top:22px"><b>Payment terms</b><div class="terms">${esc(S.terms)}</div></div>`;
+}
+function waText(){
+  const sides = Q.show==='both' ? ['wood','alu'] : [Q.show]; const d=+Q.disc||0;
+  let t = `*${S.company} — Quotation ${Q.no}*\n${Q.client?'To: '+Q.client+'\n':''}${Q.site?'Site: '+Q.site+'\n':''}`;
+  for (const s of sides){ const rows=quoteRows(s); const sub=rows.reduce((x,r)=>x+r.amt,0);
+    t += `\n*${sideName[s]}*\n` + rows.map((r,i)=>`${i+1}. ${r.desc}\n   ${r.qty} ${r.unit} × ${rm(r.rate)} = ${rm(r.amt)}`).join('\n');
+    if (d) t += `\nDiscount: −${rm(d)}`;
+    t += `\n*Total: ${rm(sub-d)}*\n`; }
+  t += `\nPayment terms:\n${S.terms.split('\n').map(x=>'• '+x).join('\n')}\nValid ${S.validity} days.`;
+  return t;
+}
+function tsvText(){
+  const sides = Q.show==='both' ? ['wood','alu'] : [Q.show]; const d=+Q.disc||0; const out=[['No','Description','Qty','Unit','Unit Price (RM)','Amount (RM)']];
+  for (const s of sides){ if (sides.length>1) out.push(['',sideName[s].toUpperCase()]);
+    quoteRows(s).forEach((r,i)=>out.push([i+1,r.desc,r.qty,r.unit,r.rate.toFixed(2),r.amt.toFixed(2)]));
+    if (d) out.push(['','Discount','','','',(-d).toFixed(2)]); }
+  return out.map(r=>r.join('\t')).join('\n');
+}
+$('#gen').onclick = () => { if(!Q.lines.some(l=>(+l.qty||0)>0)){ toast('Add quantities first'); return; } buildDoc(); $('#modal').classList.add('on'); LS.set('tsp.seq', Math.max(LS.get('tsp.seq')||0, +(Q.no.split('-').pop())||0)); };
+$('#m-close').onclick = () => $('#modal').classList.remove('on');
+$('#m-wa').onclick = () => copy(waText());
+$('#m-tsv').onclick = () => copy(tsvText());
+$('#m-print').onclick = () => { try{ window.print(); }catch(e){} setTimeout(()=>toast('If nothing opened, print from the hosted page'),400); };
+
+// ===== saved quotes =====
+function renderSaved(){
+  const list = LS.get('tsp.saved')||[];
+  $('#saved-list').innerHTML = list.length ? `<table class="rt"><tr><th class="l">Quote</th><th class="l">Client</th><th>Plywood</th><th>ACP</th><th class="l">Saved</th><th></th></tr>${
+    list.map((q,i)=>{ const old=Q; Q=q.data; const {w,a}=totals(); Q=old;
+      return `<tr><td class="l">${esc(q.data.no)}</td><td class="l">${esc(q.data.client)||'—'}<div class="cd" style="color:var(--sub);font-size:12px">${esc(q.data.site)}</div></td><td>${rm0(w.t)}</td><td>${rm0(a.t)}</td><td class="l">${new Date(q.at).toLocaleString('en-MY',{dateStyle:'medium',timeStyle:'short'})}</td>
+      <td><button class="btn sm" data-load="${i}">Open</button> <button class="x" data-rm="${i}">×</button></td></tr>`; }).join('')}</table>` : '<p class="empty">No saved quotes yet.</p>';
+}
+$('#save-now').onclick = () => { const list=LS.get('tsp.saved')||[]; const i=list.findIndex(x=>x.data.no===Q.no); const rec={at:Date.now(),data:clone(Q)}; if(i>=0) list[i]=rec; else list.unshift(rec); LS.set('tsp.saved',list); renderSaved(); toast('Saved '+Q.no); };
+$('#saved-list').addEventListener('click', e => { const list=LS.get('tsp.saved')||[];
+  if (e.target.dataset.load!==undefined){ Q=clone(list[+e.target.dataset.load].data); saveQ(); renderAll(); showTab('quote'); }
+  if (e.target.dataset.rm!==undefined){ list.splice(+e.target.dataset.rm,1); LS.set('tsp.saved',list); renderSaved(); } });
+
+// ===== rates view =====
+const KV = {
+  wood: [['ply','Plywood 4×8 sheet','RM / sheet (carcass)'],['bb','Blockboard 4×8 sheet','RM / sheet (shelves, door core)'],['hpl','HPL laminate 4×8 sheet','RM / sheet'],['abs','ABS edging 1.0mm','RM / linear ft'],['waste','Cutting wastage','fraction, 0.15 = 15%']],
+  alu: [['alkg','Aluminium extrusion','RM / kg (4021/4016/4018)'],['acp','ACP (Alcobond) sheet','RM / sqft'],['glass','3G colour glass','RM / sqft'],['handle','3G alu handle profile','RM / linear ft'],['hinge','Soft-close hinge','RM / pc']],
+  oh: [['rent','Factory rental','RM / month'],['salary','Worker salaries','RM / month'],['util','Electricity & water','RM / month'],['diesel','Lorry diesel & upkeep','RM / month'],['cap','Monthly capacity','ft run / month'],['ccFrame','Concrete table subframe OH','RM / ft'],['ccInsert','Concrete corner box-up OH','RM / set'],['panel','Exposed end panel OH','RM / pc (×0.6–2.2 by size)']],
+  inst: [['base','Base cabinet','RM / ft'],['w30','Wall 30"','RM / ft'],['w36','Wall 36" / fridge 36"','RM / ft'],['w48','Wall 48" / fridge 48"','RM / ft'],['t9','Tall & closet 9′','RM / ft'],['t10','Tall & closet 10′','RM / ft'],['dp9','Display 9′','RM / ft'],['dp10','Display 10′','RM / ft'],['ccFrame','Concrete subframe','RM / ft'],['ccInsert','Concrete corner box-up','RM / set'],['panel','End panel','RM / pc (scaled by size)']],
+};
+function kv(el, obj, defs, grp){ $(el).innerHTML = defs.map(([k,l,u]) => `<span>${l}<em>${u}</em></span><input type="number" step="any" data-g="${grp}" data-k="${k}" value="${obj[k]}">`).join(''); }
+function renderRates(){
+  kv('#r-wood', S.mat, KV.wood, 'mat'); kv('#r-alu', S.mat, KV.alu, 'mat'); kv('#r-oh', S.oh, KV.oh, 'oh'); kv('#r-inst', S.inst, KV.inst, 'inst');
+  $('#r-ohbase').textContent = `Base overhead = ${rm(ohBase(S))} / ft run (monthly total ÷ capacity), then × 0.65–1.7 by cabinet size.`;
+  $('#r-doors').innerHTML = `<tr><th class="l">Door</th><th class="l">Source</th><th>Buy RM/sqft</th><th>Margin %</th><th>Sell RM/sqft</th><th>Base/Wall +/ft (2.5 sqft)</th><th>Tall 9′ +/ft (8.5 sqft)</th></tr>` +
+    S.doors.map((d,i) => { const sell=doorSell(S,d); return `<tr><td class="l">${esc(d.name)}</td><td class="l">${esc(d.src)}</td>
+      <td>${d.code==='D-HPL' ? doorBuy(S,d).toFixed(2) : d.code==='D-NONE' ? '–' : `<input type="number" step="any" data-door="${i}" data-k="buy" value="${d.buy}">`}</td>
+      <td>${d.code==='D-NONE'?'–':`<input type="number" step="1" data-door="${i}" data-k="m" value="${Math.round(d.m*100)}">`}</td>
+      <td><b>${sell}</b></td><td>${Math.ceil(sell*2.5)}</td><td>${Math.ceil(sell*8.5)}</td></tr>`; }).join('');
+  $('#r-min').value = Math.round(S.minMargin*100);
+  let h = `<tr><th class="l">Item</th><th class="l">Unit</th>
+    <th class="w">Ply mat</th><th class="w">Ply cost</th><th class="w">Ply sell</th><th class="w">Margin</th><th class="w">× Mat</th>
+    <th class="a">ACP mat</th><th class="a">ACP cost</th><th class="a">ACP sell</th><th class="a">Margin</th><th class="a">× Mat</th></tr>`;
+  let g='';
+  for (const it of ITEMS){
+    if (it.group!==g){ g=it.group; h+=`<tr class="gh" style="${gv(g)}"><td colspan="12" style="background:var(--t);color:var(--c)"><span class="dot" style="background:var(--c)"></span>${g}</td></tr>`; }
+    const [w,a] = master(S,it);
+    const xm = (s,m) => m>0 ? `<span style="color:${s/m<3?'var(--warn)':'inherit'}">${(s/m).toFixed(2)}×</span>` : '–';
+    h += `<tr data-code="${it.code}"><td class="l">${esc(it.name)}</td><td class="l">${it.unit}</td>
+      <td>${w.mat.toFixed(2)}</td><td class="c0">${w.cost.toFixed(2)}</td><td><input type="number" step="any" data-sell="0" value="${S.sell[it.code][0]}"></td><td class="m0">${mgTag(w.margin)}</td><td class="x0">${xm(w.sell,w.mat)}</td>
+      <td>${a.mat.toFixed(2)}</td><td class="c1">${a.cost.toFixed(2)}</td><td><input type="number" step="any" data-sell="1" value="${S.sell[it.code][1]}"></td><td class="m1">${mgTag(a.margin)}</td><td class="x1">${xm(a.sell,a.mat)}</td></tr>`;
+  }
+  $('#r-items').innerHTML = h;
+  $('#r-company').value=S.company; $('#r-valid').value=S.validity; $('#r-terms').value=S.terms;
+}
+let rtimer;
+$('#v-rates').addEventListener('input', e => {
+  const t=e.target; const v=t.value===''?0:+t.value;
+  if (t.dataset.g){ S[t.dataset.g][t.dataset.k]=v; }
+  else if (t.dataset.door!==undefined){ S.doors[+t.dataset.door][t.dataset.k] = t.dataset.k==='m' ? v/100 : v; }
+  else if (t.dataset.sell!==undefined){ const code=t.closest('tr').dataset.code; S.sell[code][+t.dataset.sell]=v;
+    const [w,a]=master(S,ITEM[code]); const tr=t.closest('tr'); const s=+t.dataset.sell, m=s?a:w;
+    tr.querySelector('.m'+s).innerHTML=mgTag(m.margin); tr.querySelector('.x'+s).textContent=m.mat>0?(m.sell/m.mat).toFixed(2)+'×':'–'; saveS(); return; }
+  else if (t.id==='r-min'){ S.minMargin=v/100; }
+  else if (t.id==='r-company'){ S.company=t.value; }
+  else if (t.id==='r-valid'){ S.validity=v; }
+  else if (t.id==='r-terms'){ S.terms=t.value; }
+  else return;
+  saveS();
+  if (t.tagName==='TEXTAREA' || t.id==='r-company') return;
+  clearTimeout(rtimer); rtimer=setTimeout(()=>{ const id=document.activeElement; const sel = id && id.dataset ? JSON.stringify(id.dataset) : null; renderRates();
+    if (sel){ const ds=JSON.parse(sel); const q=Object.entries(ds).map(([k,v])=>`[data-${k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}="${v}"]`).join(''); const el=q && $('#v-rates '+q); if(el){ el.focus(); const n=el.value.length; try{el.setSelectionRange(n,n)}catch(_){} } } }, 450);
+});
+$('#r-reset').onclick = () => { const b=$('#r-reset'); if(!b.dataset.c){ b.dataset.c=1; b.textContent='Tap again to reset'; setTimeout(()=>{delete b.dataset.c;b.textContent='Reset to price sheet'},2500); return; } S=freshSettings(); saveS(); renderRates(); toast('Reset to price sheet'); delete b.dataset.c; b.textContent='Reset to price sheet'; };
+function openIO(title, hint, text, onGo, goLabel){ $('#io-title').textContent=title; $('#io-hint').textContent=hint; $('#io-text').value=text; $('#io').classList.add('on');
+  $('#io-go').textContent = goLabel||'Copy'; $('#io-go').onclick = onGo || (()=>copy($('#io-text').value)); }
+$('#io-close').onclick = () => $('#io').classList.remove('on');
+$('#r-export').onclick = () => openIO('Export settings','Copy this and paste it into Import on another device.', JSON.stringify(S));
+$('#r-import').onclick = () => openIO('Import settings','Paste exported settings, then tap Import.', '', () => {
+  try{ const s=JSON.parse($('#io-text').value); if(!s.mat||!s.sell) throw 0; S=Object.assign(freshSettings(), s); saveS(); renderAll(); $('#io').classList.remove('on'); toast('Settings imported'); }
+  catch(e){ toast('That is not valid settings text'); } }, 'Import');
+
+// ===== tabs =====
+function showTab(t){ document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); ['quote','rates','saved'].forEach(v=>$('#v-'+v).style.display=v===t?'':'none');
+  if(t==='quote') renderLines(); if(t==='rates') renderRates(); if(t==='saved') renderSaved(); }
+$('#tabs').addEventListener('click', e => { const b=e.target.closest('button'); if(b) showTab(b.dataset.t); });
+
+function renderAll(){ renderHeader(); renderCatalog(); renderLines(); renderRates(); renderSaved(); }
+renderAll();
+</script>
+</body>
+</html>
